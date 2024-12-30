@@ -1,0 +1,26 @@
+mta.yaml
+        xsappname: cap-sflight-${org}-${space}
+
+
+package json
+{
+          "kind": "mocked",
+          "users": {
+            "dghuge.dg98@gmail.com": {
+              "password": "Deepakir@n1995",
+              "roles": [
+                "processor"
+              ]
+            },
+            "alice": {
+              "roles": [
+                "processor"
+              ]
+            },
+            "bob": {
+              "roles": [
+                "processor"
+              ]
+            }
+          }
+        },

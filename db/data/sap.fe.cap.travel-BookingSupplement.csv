@@ -1,0 +1,1 @@
+BookSupplUUID,BookingSupplementID,Price,CurrencyCode_code,to_Booking_BookingUUID,to_Travel_TravelUUID,to_Supplement_SupplementID,createdAt,createdBy,LastChangedAt,LastChangedBy

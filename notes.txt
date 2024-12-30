@@ -1,0 +1,78 @@
+make app deployment ready
+
+command
+>cds add hana,mta,xsuaa,approuter --for production
+
+this will add hana module, xsuaaa module 
+it will crete mta.yaml file
+it will add approuter config to mta.yaml - this is required if you get cannot GET/ error after service is deployed for base service url
+
+add below code in xs-security.json this is configuration for xsuaa and jwt token
+  "oauth2-configuration": {
+    "token-validity": 9000,
+    "redirect-uris": [
+      "https://*.cfapps.us10-001.hana.ondemand.com/**"
+    ]
+  },
+  "xsenableasyncservice": "true"
+
+approuter config in mta will point to app/router folder
+add xs-app json with authenticationType = xsuaa (case sensitive)
+
+if service is without UI then add below code in package.json under cds
+"cds": {
+  "fiori": {
+    "preview": true
+  },
+  "server": {
+    "index": true
+  },
+}
+
+login in BAS CLI with command CF login
+
+use command "mbt build -t gen --mtar mta.tar" to build mta file
+
+"cf deploy gen/mta.tar" to deploy
+
+
+use approuter url to access the service so xsuaa will happen automatically
+
+for destination use srv with client id and secret from  app-auth module -> srv -> view json
+check connectivity - 200 success
+
+
+###Hybrid profile
+if you want to run cds watch with HANA and XSUAA
+1. use command cds add hana,xsuaa --for hybrid
+2. this will add hybrid profile in package.json and cdsrc-private.json 
+
+HANA db will required HDI container instance
+use command > cds deploy --to hana:<container_name>
+this will create a HDI container in BTP and binding in cdsrc-private.json 
+
+for xsuaa you can use mocked strategy
+add below code in cdsrc-private.json
+"auth": {
+        "kind": "mocked",
+        "users": {
+          "alice": {
+            "password": "password",
+            "roles": [
+              "processor"
+            ]
+          }
+     },
+
+use command > cds watch --profile hybrid to run in hybrid mode. watch the logs to confirm if its using hana and xsuaa stratgey
+
+cds build --production this will build the project
+
+
+Typer - used for Typescript
+install using 
+>cds add typer
+>npm install
+
+make sure to add this before adding any cds file since it generates the typer on save.
+if files already created then just save them again to generate the Typers 
